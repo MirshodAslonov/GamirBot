@@ -32,11 +32,14 @@ function bot($method = "getMe",$paramaters = []){
     $call = $update['callback_query'];
     if ($call){
         $chat_id = $call['message']['chat']['id'];
+        $chat_type = $call['message']['chat']['type'];
+        // $message_id = $call['message']['message_id'];
     }
-    $call_id = $call['id']; 
     $call_game = $call['game_short_name'];
+    $call_id = $call['id'];
+    $call_data = $call['data'];
 }
-
+// var_dump($call_data);
 if($chat_type == "private"){
      if($text == "/start"){
         $hi_text = "Assalomu alaykum ".$user_name."<b><i> Gamir </i></b> botga hush kelibsiz.<pre>Bu botda siz turli xil aqlni charxlovchi 🤓\no'yinlar o'ynashingiz mumkun 🎯 \nboshlash uchun <b>Menu</b> dan /startgame buyrug'ini bosing 🤩</pre>";
@@ -49,11 +52,11 @@ if($chat_type == "private"){
         $reply = "Quyida siz uchun tizimda mavjud barcha o'yinlar ruyxati keltirilgan, o'zingiz uchun istalgan o'yinni tanlang !";
         $game_keyboard = [
             [
-                ['text' => "💡 Qanday o'naladi", 'callback_data' => "game||faq"],
-                ['text' => "🎮 O'yinlar soni?", 'callback_data' => "game||count"],
+                ['text' => "💡 Qanday o'naladi", 'callback_data' => "faq"],
+                ['text' => "🎮 O'yinlar soni?", 'callback_data' => "count"],
             ],
             [  
-                ['text' => " 🍏 Fruits card 🍏", 'callback_data' => "game||cards"],
+                ['text' => " 🍏 Fruits card 🍏", 'callback_data' => "cards"],
             ]
         ];
         bot('sendmessage', [
@@ -64,19 +67,19 @@ if($chat_type == "private"){
                 'inline_keyboard' => $game_keyboard
             ])
         ]);
-    }else if($call_data == 'game||faq'){
+    }else if($call_data == 'faq'){
             bot('answerCallbackQuery', [
                 'callback_query_id' => $call_id,
                 'show_alert' => true,
                 'text' => "Ushbu game bot yordamida siz tanlagan o'yinni telegram ichida ochib o'ynashingiz va natijalarni tizim reytingeda kuzatishingiz mumkin."
             ]);
-        }else if($call_data == 'game||count') {
+    }else if($call_data == 'count') {
             bot('answerCallbackQuery', [
                 'callback_query_id' => $call_id,
-                'cache_time' => 3600,
-                'text' => "O'yinlar soni: ".count($games_list)
+                'cache_time' => 60,
+                'text' => "O'yinlar soni: "."1"
             ]);
-        }else if($call_data == "game||cards") {
+    }else if($call_data == "cards") {
             bot('sendGame', [
                 'chat_id' => $chat_id,
                 'game_short_name' => "cards",
@@ -94,26 +97,26 @@ if($chat_type == "private"){
                     ]
                 ])
             ]);
-        }else if($call_game == "cards") {
+    }else if($call_game == "cards") {
             bot('answerCallbackQuery', [
                 'callback_query_id' => $call_id,
                 'url' => 
                 "https://mproweb.uz/YTless/gameBot/games/cards/"
             ]);
-        }else if($text == "/music"){
+    }else if($text == "/music"){
             bot("sendAudio",[
                         'chat_id' => $chat_id,
                         'audio' => "CQACAgIAAxkBAAPqZFyLjvCo21y9DqN6O7sNTyo2VAAD4jEAApUZ0Uq8WuEm5Nm5lS8E",
                         'caption' => 'Music play',
                         'thumb' => "AAMCAgADGQEAA-pkXIuO8KjbXL0Oo3o7uw1PKjZUAAPiMQAClRnRSrxa4Sbk2bmVAQAHbQADLwQ"
             ]);
-        }else if($text == "/info"){
+    }else if($text == "/info"){
             bot('sendmessage', [
                 'chat_id' => $chat_id,
                 'text' => "Bu <b><i>Gamir</i></b> boti 🎮😁",
                 'parse_mode' => 'HTML' 
             ]);
-        }else {
+    }else {
             $hi_text = "Iltimos ".$user_name."<b><i> Gamir </i></b> bot ni ishlatmoqchi  bo'lsangiz faqat <b><i>Menu</i></b> dan buyruqlarni yuboring ❗️";
         bot('sendMessage', [
             'chat_id' => $chat_id,
