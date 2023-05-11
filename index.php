@@ -6,29 +6,8 @@ $share_btn = [
     'share_btn' => "Do'stlarni taklif qilish 👭",
     'share_text' => "🤩🥳 Salom, biz o'yin boshladik siz ham bizga qo'shiling ?!",
     'share_link' => "https://t.me/game_mirshod_bot"
-];
-$comands = [
-    [
-        'commands' => json_encode([
-            ["command" => "/info", "description" => "About bot."],
-            ["command" => "/start", "description" => "Run the bot."],
-            ["command" => "/startgame", "description" => "All available games."],
-        ]),
-        'scope' => json_encode([
-            'type' => "chat",
-            'chat_id' => $admin
-        ])
-    ],
-    [
-        'commands' => json_encode([
-            ["command" => "/start", "description" => "Run the bot."],
-            ["command" => "/startgame", "description" => "All available games."],
-        ]),
-        'scope' => json_encode([
-            'type' => "all_private_chats"
-        ])
-    ]
-];  
+]; 
+
 function bot($method = "getMe",$paramaters = []){
  $url = "https://api.telegram.org/bot".API_KEY."/".$method;
     $curl = curl_init();
@@ -42,6 +21,7 @@ function bot($method = "getMe",$paramaters = []){
     curl_close($curl);
     if(!curl_error($curl)) return json_encode(json_decode($res,true), JSON_PRETTY_PRINT);
 };
+
 {
     $update = json_decode(file_get_contents('php://input'),true);
     $chat_id = $update['message']['chat']['id']?$update['message']['chat']['id']:null;
@@ -53,9 +33,10 @@ function bot($method = "getMe",$paramaters = []){
     if ($call){
         $chat_id = $call['message']['chat']['id'];
     }
-    $call_id = $call['id'];
+    $call_id = $call['id']; 
     $call_game = $call['game_short_name'];
 }
+
 if($chat_type == "private"){
      if($text == "/start"){
         $hi_text = "Assalomu alaykum ".$user_name."<b><i> Gamir </i></b> botga hush kelibsiz.<pre>Bu botda siz turli xil aqlni charxlovchi 🤓\no'yinlar o'ynashingiz mumkun 🎯 \nboshlash uchun <b>Menu</b> dan /startgame buyrug'ini bosing 🤩</pre>";
@@ -119,13 +100,20 @@ if($chat_type == "private"){
                 'url' => 
                 "https://mproweb.uz/YTless/gameBot/games/cards/"
             ]);
-        }else if($text == "/info" && $chat_id == $admin){
+        }else if($text == "/music"){
+            bot("sendAudio",[
+                        'chat_id' => $chat_id,
+                        'audio' => "CQACAgIAAxkBAAPqZFyLjvCo21y9DqN6O7sNTyo2VAAD4jEAApUZ0Uq8WuEm5Nm5lS8E",
+                        'caption' => 'Music play',
+                        'thumb' => "AAMCAgADGQEAA-pkXIuO8KjbXL0Oo3o7uw1PKjZUAAPiMQAClRnRSrxa4Sbk2bmVAQAHbQADLwQ"
+            ]);
+        }else if($text == "/info"){
             bot('sendmessage', [
                 'chat_id' => $chat_id,
                 'text' => "Bu <b><i>Gamir</i></b> boti 🎮😁",
                 'parse_mode' => 'HTML' 
             ]);
-        }else if($text){
+        }else {
             $hi_text = "Iltimos ".$user_name."<b><i> Gamir </i></b> bot ni ishlatmoqchi  bo'lsangiz faqat <b><i>Menu</i></b> dan buyruqlarni yuboring ❗️";
         bot('sendMessage', [
             'chat_id' => $chat_id,
@@ -133,6 +121,20 @@ if($chat_type == "private"){
             'parse_mode' => 'HTML' 
         ]);
     }
+
+function commando(){
+    bot('setMyCommands',[
+        'commands' => json_encode([
+            ["command" => "/info", "description" => "About bot."],
+            ["command" => "/start", "description" => "Run the bot."],
+            ["command" => "/startgame", "description" => "All available games."],
+            ["command" => "/music", "description" => "Personal music."],
+        ])
+    ]);
+}
+function deleteCommando(){
+     bot('deleteMyCommands',[]);
+}
 }
 
 ?>
