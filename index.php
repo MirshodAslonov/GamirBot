@@ -86,7 +86,7 @@ if($chat_type == "private"){
                 'reply_markup' => json_encode([
                     'inline_keyboard' => [
                         [
-                            ['text' => "🍏 Fruits card 🍏", 'callback_game' => []]
+                            ['text' => " Play game 💪 ", 'callback_game' => []]
                         ],
                         [
                             [
